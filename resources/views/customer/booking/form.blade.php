@@ -3,9 +3,9 @@
 @section('title', 'Form Booking Layanan')
 
 @section('content')
-    <div class="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-[#f5e8d0] shadow max-w-8xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         
-        <div class="bg-[#f6e3d3] rounded-xl shadow-2xl overflow-hidden md:grid md:grid-cols-3">
+        <div class="bg-[#F8F3D9] rounded-xl shadow-2xl overflow-hidden md:grid md:grid-cols-3">
             
             <!-- KOLOM KIRI: FORMULIR -->
             <div class="md:col-span-2 p-8 md:p-12">
@@ -36,9 +36,15 @@
                             {{-- Setiap label memiliki data-harga dasar --}}
                             <label class="flex flex-col items-center p-4 border-2 rounded-xl cursor-pointer transition duration-200 service-option hover:border-[#6b4423] hover:bg-white" data-service="{{ $service }}">
                                 <input type="checkbox" name="layanan_pilih[]" value="{{ $service }}" class="hidden service-checkbox">
-                                <span class="text-3xl mb-1">
-                                    {{ $service === 'Pet Grooming' ? '🛁' : ($service === 'Pet Hotel' ? '🏨' : '🏡') }}
-                                </span>
+                                @php
+                                    $imageMap = [
+                                        'Pet Grooming' => 'grooming.png',
+                                        'Pet Hotel' => 'hotel.png',
+                                        'Home Service' => 'homeservice.png',
+                                    ];
+                                    $imageFile = $imageMap[$service] ?? 'default.png'; // Fallback jika nama layanan tidak ada
+                                @endphp
+                                <img src="{{ asset('images/' . $imageFile) }}" alt="{{ $service }}" class="w-8 h-8 mb-1">
                                 <span class="text-sm font-semibold text-gray-700">{{ $service }}</span>
                             </label>
                             @endforeach
