@@ -13,16 +13,19 @@
     <div class="bg-[#6b4423] text-white text-sm py-2">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
             <div class="flex items-center space-x-2">
-                <img src="{{ asset('images/ig.png') }}" alt="paw" class="w-5 h-5">
+                <img src="{{ asset('images/logo_ig.png') }}" alt="paw" class="w-5 h-5">
                 <a href="https://instagram.com/victorypawshouse" target="_blank" class="hover:underline">victorypawshouse</a>
-                <img src="{{ asset('images/wa.png') }}" alt="wa" class="w-5 h-5">
+                <img src="{{ asset('images/logo_wa.png') }}" alt="wa" class="w-5 h-5">
                 <span> 08111511050</span>
             </div>
 
             <div class="flex items-center space-x-4 font-bold uppercase">
                 @auth
                     {{-- JIKA SUDAH LOGIN --}}
-                    <span class="text-sm">HELLO, {{ strtoupper(Auth::user()->username) }}</span>
+                    <a href="{{ route('profile.edit') }}" class="flex items-center space-x-2 hover:opacity-80 transition">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                        <span class="text-sm">HELLO, {{ strtoupper(Auth::user()->username) }}</span>
+                    </a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <span class="text-sm">|</span>
@@ -36,7 +39,7 @@
                     <span class="text-sm">|</span>
                     <a href="{{ route('register') }}" class="hover:underline">SIGN UP</a>
                 @endguest
-            </div>
+            </div>
         </div>
     </div>
 
@@ -75,7 +78,6 @@
                             @endif">Layanan</a>
                 <a href="#" class="text-gray-700 hover:text-gray-900">Katalog</a>
                 <a href="#" class="text-gray-700 hover:text-gray-900">Booking</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Dashboard</a>
                 <a href="#" class="text-gray-700 hover:text-gray-900">Event</a>
             </div>
         </div>
