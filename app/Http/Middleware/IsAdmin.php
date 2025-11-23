@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth; // Tambahkan ini
+use Illuminate\Support\Facades\Auth; 
 
 class IsAdmin
 {
@@ -16,12 +16,9 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Cek apakah pengguna sudah login DAN role-nya adalah 'admin'
         if (Auth::check() && Auth::user()->role == 'admin') {
-            return $next($request); // Lanjutkan ke halaman yang diminta
+            return $next($request); 
         }
-
-        // Jika bukan admin atau belum login, arahkan ke halaman home
         return redirect('/')->with('error', 'Akses ditolak. Anda bukan Admin.');
     }
 }

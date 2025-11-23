@@ -7,7 +7,7 @@ use App\Http\Controllers\Customer\BookingController;
 use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\EventPublikController;
 use App\Http\Controllers\UlasanPublikController;
-// use App\Http\Controllers\Admin\LayananController; 
+use App\Http\Controllers\Admin\AdminController;
 
 // Halaman Home
 Route::get('/', function () {
@@ -23,9 +23,7 @@ Route::get('/event', [EventPublikController::class, 'index'])->name('event.index
 Route::get('/review', [UlasanPublikController::class, 'index'])->name('review.index');
 
 require __DIR__.'/auth.php';
-
 Route::middleware(['auth'])->group(function () {
-    // API untuk cek slot waktu yang tersedia
     Route::get('/booking/check-slots', [BookingController::class, 'checkSlots'])->name('booking.checkSlots');
 
     Route::get('/dashboard-user', function () {
@@ -34,16 +32,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 
-     // Update Profile (Logika POST/PUT)
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     
-    // Store Review
     Route::post('/review/store', [ProfileController::class, 'storeReview'])->name('review.store');
     
-    // Delete Account
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Form Booking Grooming
     Route::get('/booking', [BookingController::class, 'index'])->name('booking.index'); // Tampilkan form
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store'); // Proses submit
     Route::get('/booking/check-slots', [BookingController::class, 'checkSlots'])->name('booking.checkSlots');
@@ -55,10 +49,23 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'is.admin'])->prefix('admin')->group(function () {
-
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-
-    // Nanti kita tambahkan CRUD Layanan Admin di sini
+    
+    // Halaman 1: GRAFIK & KPI (Dashboard Utama)
+    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard'); 
+    
+    // Halaman 2: MANAJEMEN BOOKING
+    Route::get('/booking', [AdminController::class, 'manageBooking'])->name('admin.booking.index');
+    
+    // Halaman 3: MANAJEMEN PEMBAYARAN
+    Route::get('/pembayaran', [AdminController::class, 'managePembayaran'])->name('admin.pembayaran.index');
+    
+    // Halaman 4: MANAJEMEN KATALOG (Produk)
+    Route::get('/katalog', [AdminController::class, 'manageKatalog'])->name('admin.katalog.index');
+    
+    // Halaman 5: MANAJEMEN EVENT (View Index Event)
+    Route::get('/event', [AdminController::class, 'manageEvent'])->name('admin.event.index');
+    
+    // Halaman 6: MANAJEMEN ULASAN
+    Route::get('/ulasan', [AdminController::class, 'manageUlasan'])->name('admin.ulasan.index');
+    
 });

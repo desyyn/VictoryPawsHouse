@@ -3,7 +3,7 @@
 @section('title', 'Form Booking Layanan')
 
 @section('content')
-<div class="bg-[#f5e8d0] shadow max-w-8xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+<div class="bg-[#F8F4E1] shadow max-w-8xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
 
     <div class="bg-[#F8F3D9] rounded-xl shadow-2xl overflow-hidden md:grid md:grid-cols-3">
 

@@ -3,7 +3,7 @@
 @section('title', 'Jadwal Pameran & Kontes')
 
 @section('content')
-    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-[#F8F4E1] max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         
         <header class="text-center mb-12">
             <h1 class="text-4xl font-extrabold text-[#6b4423]">Jadwal Pameran & Kontes</h1>

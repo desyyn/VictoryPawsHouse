@@ -44,7 +44,7 @@
     </div>
 
     <!-- Navbar utama -->
-    <nav class="bg-[#f5e8d0] shadow">
+    <nav class="bg-[#F8F4E1] shadow" style="border-bottom: 5px solid #543310;">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-20">
             <!-- Logo dan alamat -->
             <div class="flex items-start space-x-3">

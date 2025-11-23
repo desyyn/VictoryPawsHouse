@@ -13,8 +13,6 @@ class LayananSeeder extends Seeder
      */
     public function run(): void
     {
-        // Pastikan setidaknya ada 1 user di tabel pengguna agar tidak error Foreign Key
-        // Jika tabel pengguna kosong, kita buat user dummy dulu (Optional, tapi aman)
         $userId = DB::table('pengguna')->first()->id_pengguna ?? DB::table('pengguna')->insertGetId([
             'username' => 'admin_dummy',
             'email' => 'admin@example.com',
@@ -26,7 +24,7 @@ class LayananSeeder extends Seeder
 
         DB::table('layanan')->insert([
             [
-                'id_pengguna' => $userId, // <--- TAMBAHAN WAJIB
+                'id_pengguna' => $userId, 
                 'nama_layanan' => 'Pet Grooming',
                 'harga' => 50000, 
                 'gambar' => 'grooming.png',
@@ -34,7 +32,7 @@ class LayananSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id_pengguna' => $userId, // <--- TAMBAHAN WAJIB
+                'id_pengguna' => $userId, 
                 'nama_layanan' => 'Pet Hotel',
                 'harga' => 35000, 
                 'gambar' => 'hotel.png',
@@ -42,7 +40,7 @@ class LayananSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id_pengguna' => $userId, // <--- TAMBAHAN WAJIB
+                'id_pengguna' => $userId,
                 'nama_layanan' => 'Home Service',
                 'harga' => 75000, 
                 'gambar' => 'homeservice.png',

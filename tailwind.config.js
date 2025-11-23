@@ -1,12 +1,3 @@
-/** @type {import('tailwindcss').Config}
-export default {
-  content: [],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}*/
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -15,7 +6,13 @@ export default {
     "./resources/**/*.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        brownBase: "#AF8F6F",
+        brownDark: "#543310",
+        brownHover: "#8b6a4b",
+      },
+    },
   },
   plugins: [],
 }
