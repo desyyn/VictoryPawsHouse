@@ -50,6 +50,12 @@ class Booking extends Model
         return 'Layanan Lain'; // Default jika logic tidak tercapai
     }
 
+    // Relasi ke DetailBooking (One to Many)
+    public function details()
+    {
+        return $this->hasMany(DetailBooking::class, 'id_booking', 'id_booking');
+    }
+
     protected $casts = [
         'jadwal' => 'date',
         'tanggal_checkout' => 'date',
