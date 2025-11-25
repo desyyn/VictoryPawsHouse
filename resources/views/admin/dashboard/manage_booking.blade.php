@@ -3,65 +3,58 @@
 @section('title', 'Manajemen Booking')
 
 @section('content')
-<h1 class="text-2xl font-bold text-gray-800 mb-6">Manajemen Booking</h1>
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Manajemen Booking</h1>
+
+    {{-- TOMBOL CETAK SEMUA --}}
+    <a href="{{ route('admin.booking.pdf_all') }}" class="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+        </svg>
+        Cetak Laporan Full
+    </a>
+</div>
+
+{{-- Pesan Sukses --}}
+@if(session('success'))
+<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+    {{ session('success') }}
+</div>
+@endif
 
 <div class="p-6 bg-white rounded-xl shadow-lg">
-    <p class="text-gray-600">Halaman ini menampilkan daftar pesanan dengan rincian layanan yang dipilih oleh customer.</p>
-
-    <div class="mt-6 overflow-x-auto"> {{-- Tambah overflow-x-auto agar responsif di HP --}}
+    <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Customer</th>
-                    {{-- KOLOM LAYANAN (YANG AKAN KITA ISI LOOPING) --}}
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rincian Layanan</th>
-                    {{-- TAMBAHAN KOLOM TOTAL --}}
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Layanan</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jadwal</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ubah Status</th> {{-- Judul Kolom Diubah --}}
                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse ($bookings as $booking)
-                <tr class="hover:bg-gray-50 transition duration-150">
-
-                    {{-- ID BOOKING --}}
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                        #{{ $booking->id_booking }}
-                    </td>
-
-                    {{-- NAMA CUSTOMER --}}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">#{{ $booking->id_booking }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                         {{ $booking->nama }}
                         <div class="text-xs text-gray-400">{{ $booking->nomor_hp }}</div>
+                        <div class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}</div>
                     </td>
-
-                    {{-- [BAGIAN YANG DIGANTI] RINCIAN LAYANAN --}}
                     <td class="px-6 py-4 text-sm text-gray-500">
-                        <ul class="list-disc list-inside space-y-1">
+                        <ul class="list-disc list-inside text-xs">
                             @foreach($booking->details as $detail)
-                            <li>
-                                {{-- Ambil Nama Layanan dari Relasi --}}
-                                <span class="font-medium text-gray-700">
-                                    {{ $detail->layanan->nama_layanan ?? 'Layanan Dihapus' }}
-                                </span>
-
-                                {{-- Tampilkan Harga Satuan (Optional) --}}
-                                <span class="text-xs text-gray-400 ml-1">
-                                    (Rp {{ number_format($detail->harga_saat_ini, 0, ',', '.') }})
-                                </span>
-                            </li>
+                            <li>{{ $detail->layanan->nama_layanan ?? '-' }}</li>
                             @endforeach
                         </ul>
                     </td>
-
-                    {{-- TOTAL HARGA --}}
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-[#6b4423]">
                         Rp {{ number_format($booking->total_harga, 0, ',', '.') }}
                     </td>
-
                     {{-- JADWAL --}}
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div class="flex flex-col">
@@ -74,38 +67,46 @@
                             @endif
                         </div>
                     </td>
-
-                    {{-- STATUS --}}
+                    {{-- FITUR STATUS DROPDOWN (INTERAKTIF) --}}
                     <td class="px-6 py-4 whitespace-nowrap">
-                        @php
-                        $statusColor = match(strtolower($booking->status)) {
-                        'selesai', 'dibayar' => 'bg-green-100 text-green-800',
-                        'pending', 'menunggu_konfirmasi' => 'bg-yellow-100 text-yellow-800',
-                        'ditolak', 'batal' => 'bg-red-100 text-red-800',
-                        default => 'bg-gray-100 text-gray-800',
-                        };
-                        @endphp
-                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColor }}">
-                            {{ ucfirst($booking->status) }}
-                        </span>
-                    </td>
+                        <form action="{{ route('admin.booking.updateStatus', $booking->id_booking) }}" method="POST">
+                            @csrf
+                            @method('PUT')
 
-                    {{-- AKSI --}}
+                            @php
+                            $bgStatus = match($booking->status) {
+                            'dibayar' => 'bg-green-100 text-green-800 border-green-300', // Dibayar jadi HIJAU (Sukses)
+                            'ditolak' => 'bg-red-100 text-red-800 border-red-300',
+                            default => 'bg-yellow-100 text-yellow-800 border-yellow-300' // Pending
+                            };
+                            @endphp
+
+                            <select name="status" onchange="this.form.submit()"
+                                class="text-xs font-bold rounded-full px-3 py-1 border-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 {{ $bgStatus }}">
+
+                                <option value="pending" {{ $booking->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="dibayar" {{ $booking->status == 'dibayar' ? 'selected' : '' }}>Dibayar (Lunas/Selesai)</option>
+                                <option value="ditolak" {{ $booking->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+
+                            </select>
+                        </form>
+                    </td>
+                    
+                    
+
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3 font-bold">Detail</a>
-                        <a href="#" class="text-red-600 hover:text-red-900">PDF</a>
+                        {{-- TOMBOL PDF SATUAN --}}
+                        <a href="{{ route('admin.booking.pdf', $booking->id_booking) }}" class="text-red-600 hover:text-red-900 flex justify-end items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            PDF
+                        </a>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-6 py-10 text-center text-gray-500">
-                        <div class="flex flex-col items-center justify-center">
-                            <svg class="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                            </svg>
-                            <p>Belum ada data booking yang masuk.</p>
-                        </div>
-                    </td>
+                    <td colspan="6" class="px-6 py-10 text-center text-gray-500">Tidak ada data booking.</td>
                 </tr>
                 @endforelse
             </tbody>
